@@ -83,7 +83,7 @@ class GradCAM:
         """
         for layer in reversed(model.layers):
             # Select closest 4D layer to the end of the network.
-            if len(layer.output_shape) == 4:
+            if len(layer.output.shape) == 4:
                 return layer.name
 
         raise ValueError(
@@ -108,7 +108,7 @@ class GradCAM:
             Tuple[tf.Tensor, tf.Tensor]: (Target layer outputs, Guided gradients)
         """
         grad_model = tf.keras.models.Model(
-            [model.inputs], [model.get_layer(layer_name).output, model.output]
+            model.inputs, [model.get_layer(layer_name).output, model.output]
         )
 
         with tf.GradientTape() as tape:
